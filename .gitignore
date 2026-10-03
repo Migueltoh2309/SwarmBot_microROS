@@ -1,0 +1,30 @@
+# --- Toolchain ESP-IDF (clone de Espressif, ~3.7 GB; ver README) ---
+esp/
+
+# --- Firmware (ESP-IDF) ---
+build/
+managed_components/
+sdkconfig.old
+# micro-ROS para ESP-IDF: se clona aparte (ver firmware/README.md, sección 4.5)
+firmware/*/components/micro_ros_espidf_component/
+
+# Credenciales locales (Wi-Fi, IP del agente): nunca a git
+sdkconfig.defaults.local
+# sdkconfig generados que contienen esas credenciales
+firmware/wifi_test/sdkconfig
+firmware/microros_publisher/sdkconfig
+firmware/microros_subscriber/sdkconfig
+
+# --- Workspace ROS 2 ---
+microros_ws/build/
+microros_ws/install/
+microros_ws/log/
+# Repos externos que trae micro_ros_setup (agente micro-ROS)
+microros_ws/src/micro_ros_setup/
+microros_ws/src/uros/
+
+# --- Varios ---
+__pycache__/
+*.py[cod]
+.vscode/
+.DS_Store

@@ -1,0 +1,16 @@
+CONFIG_IDF_TARGET="esp32s3"
+
+# Red Wi-Fi e IP del agente: valores de ejemplo. Los reales van en
+# sdkconfig.defaults.local (ignorado por git), que el CMakeLists.txt
+# carga encima de este archivo si existe.
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=3000
+CONFIG_ESP_TASK_WDT=n
+
+CONFIG_MICRO_ROS_ESP_XRCE_DDS_MIDDLEWARE=y
+CONFIG_MICRO_ROS_ESP_NETIF_WLAN=y
+
+CONFIG_ESP_WIFI_SSID="TU_RED_WIFI"
+CONFIG_ESP_WIFI_PASSWORD="TU_PASSWORD"
+
+CONFIG_MICRO_ROS_AGENT_IP="192.168.1.100"
+CONFIG_MICRO_ROS_AGENT_PORT="8888"

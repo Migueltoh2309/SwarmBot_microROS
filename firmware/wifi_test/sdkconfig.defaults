@@ -1,0 +1,8 @@
+CONFIG_IDF_TARGET="esp32s3"
+
+# Red Wi-Fi e IP del agente: valores de ejemplo. Los reales van en
+# sdkconfig.defaults.local (ignorado por git), que el CMakeLists.txt
+# carga encima de este archivo si existe.
+CONFIG_ESP_WIFI_SOFTAP_SUPPORT=n
+CONFIG_ESP_WIFI_SSID="TU_RED_WIFI"
+CONFIG_ESP_WIFI_PASSWORD="TU_PASSWORD"

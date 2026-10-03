@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<robot name="swarmbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Placeholder chassis dimensions (small N20-motor diff-drive robot).
+       Adjust once real chassis measurements are known. -->
+  <xacro:property name="chassis_length" value="0.10"/>
+  <xacro:property name="chassis_width" value="0.10"/>
+  <xacro:property name="chassis_height" value="0.04"/>
+  <xacro:property name="wheel_radius" value="0.020"/>
+  <xacro:property name="wheel_width" value="0.010"/>
+  <xacro:property name="wheel_separation" value="0.11"/>
+
+  <material name="chassis_color">
+    <color rgba="0.15 0.35 0.75 1.0"/>
+  </material>
+  <material name="wheel_color">
+    <color rgba="0.1 0.1 0.1 1.0"/>
+  </material>
+  <material name="sensor_color">
+    <color rgba="0.9 0.2 0.2 1.0"/>
+  </material>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+      <material name="chassis_color"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Wheels: driven joints, confirmed to carry encoder-derived odometry later -->
+  <xacro:macro name="wheel" params="side y_reflect">
+    <link name="wheel_${side}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+        <material name="wheel_color"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="wheel_${side}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="wheel_${side}_link"/>
+      <origin xyz="0 ${y_reflect * wheel_separation / 2} ${-chassis_height / 2}" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+  </xacro:macro>
+  <xacro:wheel side="left" y_reflect="1"/>
+  <xacro:wheel side="right" y_reflect="-1"/>
+
+  <!-- Passive caster (not a driven/encoded joint) -->
+  <link name="caster_link">
+    <visual>
+      <geometry>
+        <sphere radius="${wheel_radius / 2}"/>
+      </geometry>
+      <material name="wheel_color"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${wheel_radius / 2}"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_link"/>
+    <origin xyz="${-chassis_length / 2 + wheel_radius / 2} 0 ${-chassis_height / 2 - wheel_radius / 4}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- IMU: confirmed sensor -->
+  <link name="imu_link"/>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 ${chassis_height / 2}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ToF range sensors: NOT yet confirmed for this robot. If ToF ends up
+       unused, delete this macro block and the matching Range displays in
+       rviz/swarmbot.rviz — nothing else in the description depends on them. -->
+  <xacro:macro name="range_sensor" params="name x y yaw">
+    <link name="${name}_link">
+      <visual>
+        <geometry>
+          <box size="0.01 0.01 0.01"/>
+        </geometry>
+        <material name="sensor_color"/>
+      </visual>
+    </link>
+    <joint name="${name}_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${name}_link"/>
+      <origin xyz="${x} ${y} 0" rpy="0 0 ${yaw}"/>
+    </joint>
+  </xacro:macro>
+  <xacro:range_sensor name="range_front" x="${chassis_length / 2}" y="0" yaw="0"/>
+  <xacro:range_sensor name="range_left" x="0" y="${chassis_width / 2}" yaw="1.5708"/>
+  <xacro:range_sensor name="range_right" x="0" y="${-chassis_width / 2}" yaw="-1.5708"/>
+
+</robot>
