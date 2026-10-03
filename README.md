@@ -123,4 +123,4 @@ ros2 launch swarmbot_bringup real_robot.launch.py   # con el robot real
 
 ## Autor
 
-Miguel Olortegui — UTEC
+MiTo Olórtegui Huamán — UTEC
